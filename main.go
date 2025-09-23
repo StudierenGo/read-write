@@ -13,7 +13,7 @@ func main() {
 	files.ReadFile("test.txt")
 	files.WriteFile("test.txt", "Hello, World!")
 	userLogin, userPassword, userUrl := helpers.GetUserInput()
-	account, err := account.UserAccountWithTimeStampConstructor(userLogin, userPassword, userUrl)
+	account, err := account.UserAccountConstructor(userLogin, userPassword, userUrl)
 
 	if err != nil {
 		fmt.Println("Error creating account:", err)
