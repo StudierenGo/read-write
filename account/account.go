@@ -1,7 +1,7 @@
 package account
 
 import (
-	"demo/packages/helpers"
+	"demo/files/helpers"
 	"errors"
 	"fmt"
 	"math/rand"

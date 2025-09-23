@@ -1,14 +1,16 @@
 package main
 
 import (
-	"demo/packages/account"
-	"demo/packages/helpers"
+	"demo/files/account"
+	"demo/files/files"
+	"demo/files/helpers"
 	"fmt"
 
 	"github.com/fatih/color"
 )
 
 func main() {
+	files.WriteFile("test.txt", "Hello, World!")
 	userLogin, userPassword, userUrl := helpers.GetUserInput()
 	account, err := account.UserAccountWithTimeStampConstructor(userLogin, userPassword, userUrl)
 
