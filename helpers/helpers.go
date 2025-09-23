@@ -5,7 +5,6 @@ import (
 	"fmt"
 	"os"
 	"strings"
-	"unicode"
 )
 
 /*
@@ -19,21 +18,6 @@ func GetUserInput() (string, string, string) {
 	userUrl := promptUserData("Enter your url (yandex/google/etc)")
 
 	return userLogin, userPassword, userUrl
-}
-
-/*
-CapitalizeWord принимает строку и возвращает её копию,
-где первая буква приведена к верхнему регистру, а остальные — к нижнему.
-Если строка пустая, возвращает её без изменений.
-*/
-func CapitalizeWord(s string) string {
-	if s == "" {
-		return s
-	}
-
-	runes := []rune(strings.ToLower(s))
-	runes[0] = unicode.ToUpper(runes[0])
-	return string(runes)
 }
 
 /*

@@ -8,8 +8,30 @@ import (
 )
 
 func main() {
-	createAccount()
+	// Simple command-line interface
+	var choice string
+	fmt.Println("Welcome to the User Account Manager!")
+	fmt.Println("1. Create a new account")
+	fmt.Println("2. Find account")
+	fmt.Println("3. Delete account")
+	fmt.Println("4. Exit")
+	fmt.Print("Enter your choice: ")
+	fmt.Scanln(&choice)
 
+Menu:
+	switch choice {
+	case "1":
+		createAccount()
+	case "2":
+		findAccount()
+	case "3":
+		deleteAccount()
+	case "4":
+		fmt.Println("Exiting the program. Goodbye!")
+		break Menu
+	default:
+		fmt.Println("Invalid choice. Please try again.")
+	}
 }
 
 func createAccount() {
@@ -30,3 +52,7 @@ func createAccount() {
 
 	files.WriteFile("account.json", file)
 }
+
+func findAccount() {}
+
+func deleteAccount() {}

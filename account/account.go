@@ -1,10 +1,8 @@
 package account
 
 import (
-	"demo/files/helpers"
 	"encoding/json"
 	"errors"
-	"fmt"
 	"math/rand"
 	"net/url"
 	"time"
@@ -28,11 +26,6 @@ func (account *UserAccount) ToBytes() ([]byte, error) {
 	}
 
 	return file, nil
-}
-
-func (account UserAccount) OutputUserData() string {
-	return fmt.Sprintf(
-		"Dear user %s, your password is %s and it's reference to %s\n", helpers.CapitalizeWord(account.Login), account.Password, account.Url)
 }
 
 func (account *UserAccount) generatePassword(n int) {
