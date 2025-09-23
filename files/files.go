@@ -5,7 +5,16 @@ import (
 	"os"
 )
 
-func ReadFile() {}
+func ReadFile(fileName string) {
+	data, err := os.ReadFile(fileName)
+
+	if err != nil {
+		fmt.Println("Error reading file:", err)
+		return
+	}
+
+	fmt.Println("File content:", string(data))
+}
 
 func WriteFile(name, content string) {
 	file, err := os.Create(name)

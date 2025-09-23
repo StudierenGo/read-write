@@ -10,6 +10,7 @@ import (
 )
 
 func main() {
+	files.ReadFile("test.txt")
 	files.WriteFile("test.txt", "Hello, World!")
 	userLogin, userPassword, userUrl := helpers.GetUserInput()
 	account, err := account.UserAccountWithTimeStampConstructor(userLogin, userPassword, userUrl)
