@@ -2,6 +2,7 @@ package account
 
 import (
 	"demo/files/helpers"
+	"encoding/json"
 	"errors"
 	"fmt"
 	"math/rand"
@@ -17,6 +18,16 @@ type UserAccount struct {
 	Url       string    `json:"url"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
+}
+
+func (account *UserAccount) ToBytes() ([]byte, error) {
+	file, err := json.Marshal(account)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return file, nil
 }
 
 func (account UserAccount) OutputUserData() string {
