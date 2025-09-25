@@ -26,10 +26,10 @@ func main() {
 		case "3":
 			deleteAccount()
 		case "4":
-			fmt.Println("Exiting the program. Goodbye!")
+			color.Green("Exiting the program. Goodbye!")
 			return
 		default:
-			fmt.Println("Invalid choice. Please try again.")
+			color.Magenta("Invalid choice. Please try again.")
 		}
 	}
 }
@@ -50,7 +50,7 @@ func createAccount() {
 	account, err := account.NewAccount(userLogin, userPassword, userUrl)
 
 	if err != nil {
-		fmt.Println("Error creating account:", err)
+		color.Red("Error creating account:", err)
 		return
 	}
 
@@ -59,7 +59,7 @@ func createAccount() {
 	file, err := vault.ToBytes()
 
 	if err != nil {
-		fmt.Println("Error converting account to bytes:", err)
+		color.Red("Error converting account to bytes:", err)
 		return
 	}
 

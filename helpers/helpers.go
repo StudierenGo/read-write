@@ -5,6 +5,8 @@ import (
 	"fmt"
 	"os"
 	"strings"
+
+	"github.com/fatih/color"
 )
 
 /*
@@ -31,7 +33,7 @@ func promptUserData(prompt string) string {
 	userAnswer, err := reader.ReadString('\n')
 
 	if err != nil {
-		fmt.Println("Error reading input:", err)
+		color.Red("Error reading input:", err)
 		return ""
 	}
 
