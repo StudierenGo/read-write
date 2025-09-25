@@ -14,6 +14,11 @@ type Vault struct {
 	UpdatedAt time.Time         `json:"updatedAt"`
 }
 
+/*
+NewVault создает новый экземпляр хранилища Vault.
+Если файл accounts.json существует, метод читает его содержимое и десериализует в структуру Vault.
+В случае ошибки или отсутствия файла возвращает пустое хранилище Vault с текущим временем обновления.
+*/
 func NewVault() *Vault {
 	file, err := files.ReadFile("accounts.json")
 
@@ -34,6 +39,10 @@ func NewVault() *Vault {
 	return &vault
 }
 
+/*
+AddNewAccount добавляет новый аккаунт в хранилище Vault.
+Метод помещает переданный аккаунт в массив Accounts и обновляет время обновления хранилища.
+*/
 func (vault *Vault) AddNewAccount(account account.Account) {
 	vault.Accounts = append(vault.Accounts, account)
 	vault.UpdatedAt = time.Now()

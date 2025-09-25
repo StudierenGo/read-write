@@ -30,6 +30,8 @@ func WriteFile(name string, content []byte) {
 		return
 	}
 
+	color.Cyan("--------------------------")
 	color.Cyan("File written successfully!")
+	color.Cyan("--------------------------")
 	defer file.Close()
 }
