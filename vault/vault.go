@@ -2,8 +2,11 @@ package vault
 
 import (
 	"demo/files/account"
+	"demo/files/files"
 	"encoding/json"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 type Vault struct {
@@ -12,10 +15,23 @@ type Vault struct {
 }
 
 func NewVault() *Vault {
-	return &Vault{
-		Accounts:  []account.Account{},
-		UpdatedAt: time.Now(),
+	file, err := files.ReadFile("accounts.json")
+
+	if err != nil {
+		return &Vault{
+			Accounts:  []account.Account{},
+			UpdatedAt: time.Now(),
+		}
 	}
+
+	var vault Vault
+	err = json.Unmarshal(file, &vault)
+
+	if err != nil {
+		color.Red("Error reading file:", err.Error())
+	}
+
+	return &vault
 }
 
 func (vault *Vault) AddNewAccount(account account.Account) {
