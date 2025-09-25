@@ -5,10 +5,13 @@ import (
 	"demo/files/files"
 	"demo/files/helpers"
 	"fmt"
+
+	"github.com/fatih/color"
 )
 
 func main() {
-	fmt.Println("Welcome to the User Account Manager!")
+	color.Blue("=== Welcome to the User Account Manager! ===")
+	color.Blue("--------------------------------------------")
 
 	for {
 		choice := getMenuChoice()
@@ -30,11 +33,11 @@ func main() {
 }
 
 func getMenuChoice() (choice string) {
-	fmt.Println("1. Create a new account")
-	fmt.Println("2. Find account")
-	fmt.Println("3. Delete account")
-	fmt.Println("4. Exit")
-	fmt.Print("Enter your choice: ")
+	color.Green("1. Create a new account")
+	color.Yellow("2. Find account")
+	color.Red("3. Delete account")
+	color.Magenta("4. Exit")
+	color.Cyan("Enter your choice: ")
 	fmt.Scanln(&choice)
 
 	return
