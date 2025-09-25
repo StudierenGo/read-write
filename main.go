@@ -4,12 +4,14 @@ import (
 	"demo/files/account"
 	"demo/files/files"
 	"demo/files/helpers"
+	"demo/files/vault"
 	"fmt"
 
 	"github.com/fatih/color"
 )
 
 func main() {
+	color.Blue("--------------------------------------------")
 	color.Blue("=== Welcome to the User Account Manager! ===")
 	color.Blue("--------------------------------------------")
 
@@ -45,14 +47,16 @@ func getMenuChoice() (choice string) {
 
 func createAccount() {
 	userLogin, userPassword, userUrl := helpers.GetUserInput()
-	account, err := account.UserAccountConstructor(userLogin, userPassword, userUrl)
+	account, err := account.NewAccount(userLogin, userPassword, userUrl)
 
 	if err != nil {
 		fmt.Println("Error creating account:", err)
 		return
 	}
 
-	file, err := account.ToBytes()
+	vault := vault.NewVault()
+	vault.AddNewAccount(*account)
+	file, err := vault.ToBytes()
 
 	if err != nil {
 		fmt.Println("Error converting account to bytes:", err)

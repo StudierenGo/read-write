@@ -1,7 +1,6 @@
 package account
 
 import (
-	"encoding/json"
 	"errors"
 	"math/rand"
 	"net/url"
@@ -10,7 +9,7 @@ import (
 
 const PASSWORD_LENGTH = 13
 
-type UserAccount struct {
+type Account struct {
 	Login     string    `json:"login"`
 	Password  string    `json:"password"`
 	Url       string    `json:"url"`
@@ -18,17 +17,7 @@ type UserAccount struct {
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-func (account *UserAccount) ToBytes() ([]byte, error) {
-	file, err := json.Marshal(account)
-
-	if err != nil {
-		return nil, err
-	}
-
-	return file, nil
-}
-
-func (account *UserAccount) generatePassword(n int) {
+func (account *Account) generatePassword(n int) {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
 	result := make([]rune, n)
 
@@ -39,7 +28,7 @@ func (account *UserAccount) generatePassword(n int) {
 	account.Password = string(result)
 }
 
-func UserAccountConstructor(userLogin, userPassword, userUrl string) (*UserAccount, error) {
+func NewAccount(userLogin, userPassword, userUrl string) (*Account, error) {
 	_, err := url.ParseRequestURI(userUrl)
 
 	if err != nil {
@@ -50,7 +39,7 @@ func UserAccountConstructor(userLogin, userPassword, userUrl string) (*UserAccou
 		return nil, errors.New("login cannot be empty")
 	}
 
-	acc := &UserAccount{
+	acc := &Account{
 		Login:     userLogin,
 		Password:  userPassword,
 		Url:       userUrl,
