@@ -4,7 +4,7 @@ import (
 	"demo/files/account"
 	"demo/files/files"
 	"demo/files/helpers"
-	vlt "demo/files/vault" // <-- renamed import like vlt to avoid conflict with package name
+	"demo/files/vault"
 	"fmt"
 
 	"github.com/fatih/color"
@@ -15,14 +15,16 @@ func main() {
 	color.Blue("=== Welcome to the User Account Manager! ===")
 	color.Blue("--------------------------------------------")
 
+	existingVault := vault.NewVault()
+
 	for {
 		choice := getMenuChoice()
 
 		switch choice {
 		case "1":
-			createAccount()
+			createAccount(existingVault)
 		case "2":
-			findAccount()
+			findAccount(existingVault)
 		case "3":
 			deleteAccount()
 		case "4":
@@ -45,7 +47,7 @@ func getMenuChoice() (choice string) {
 	return
 }
 
-func createAccount() {
+func createAccount(existingVault *vault.Vault) {
 	userLogin, userPassword, userUrl := helpers.GetUserInput()
 	account, err := account.NewAccount(userLogin, userPassword, userUrl)
 
@@ -54,18 +56,30 @@ func createAccount() {
 		return
 	}
 
-	vault := vlt.NewVault()
-	vault.AddNewAccount(*account)
-	file, err := vault.ToBytes()
+	existingVault.AddNewAccount(*account)
+	file, err := existingVault.ToBytes()
 
 	if err != nil {
 		color.Red("Error converting account to bytes:", err)
 		return
 	}
 
-	files.WriteFile(vlt.VaultFileName, file)
+	files.WriteFile(vault.VaultFileName, file)
 }
 
-func findAccount() {}
+func findAccount(existingVault *vault.Vault) {
+	url := helpers.PromptUserData("Enter URL to search")
+	accounts := existingVault.FindAccountsByUrl(url)
+
+	for _, account := range accounts {
+		account.Output()
+	}
+
+	if len(accounts) == 0 {
+		color.Red("-----------------------------------------")
+		color.Red("No accounts found for the given URL: %s", url)
+		color.Red("-----------------------------------------")
+	}
+}
 
 func deleteAccount() {}

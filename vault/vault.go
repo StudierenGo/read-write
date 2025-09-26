@@ -4,6 +4,7 @@ import (
 	"demo/files/account"
 	"demo/files/files"
 	"encoding/json"
+	"strings"
 	"time"
 
 	"github.com/fatih/color"
@@ -39,6 +40,19 @@ func NewVault() *Vault {
 	}
 
 	return &vault
+}
+
+func (vault *Vault) FindAccountsByUrl(url string) []account.Account {
+	var accounts []account.Account
+
+	for _, account := range vault.Accounts {
+		isMatch := strings.Contains(account.Url, url)
+		if isMatch {
+			accounts = append(accounts, account)
+		}
+	}
+
+	return accounts
 }
 
 /*

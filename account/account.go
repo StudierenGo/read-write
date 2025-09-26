@@ -5,6 +5,8 @@ import (
 	"math/rand"
 	"net/url"
 	"time"
+
+	"github.com/fatih/color"
 )
 
 const PASSWORD_LENGTH = 13
@@ -52,4 +54,10 @@ func NewAccount(userLogin, userPassword, userUrl string) (*Account, error) {
 	}
 
 	return acc, nil
+}
+
+func (account *Account) Output() {
+	color.Green("Login: %s", account.Login)
+	color.Green("Url: %s", account.Url)
+	color.Green("---------------------------")
 }
