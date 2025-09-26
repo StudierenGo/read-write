@@ -2,7 +2,6 @@ package main
 
 import (
 	"demo/files/account"
-	"demo/files/files"
 	"demo/files/helpers"
 	"demo/files/vault"
 	"fmt"
@@ -26,7 +25,7 @@ func main() {
 		case "2":
 			findAccount(existingVault)
 		case "3":
-			deleteAccount()
+			deleteAccount(existingVault)
 		case "4":
 			color.Green("Exiting the program. Goodbye!")
 			return
@@ -57,14 +56,6 @@ func createAccount(existingVault *vault.Vault) {
 	}
 
 	existingVault.AddNewAccount(*account)
-	file, err := existingVault.ToBytes()
-
-	if err != nil {
-		color.Red("Error converting account to bytes:", err)
-		return
-	}
-
-	files.WriteFile(vault.VaultFileName, file)
 }
 
 func findAccount(existingVault *vault.Vault) {
@@ -82,4 +73,17 @@ func findAccount(existingVault *vault.Vault) {
 	}
 }
 
-func deleteAccount() {}
+func deleteAccount(existingVault *vault.Vault) {
+	url := helpers.PromptUserData("Enter URL to search")
+	isDeleted := existingVault.DeleteAccountByUrl(url)
+
+	if isDeleted {
+		color.Yellow("-----------------------------------------")
+		color.Yellow("Account(s) with URL containing '%s' deleted.", url)
+		color.Yellow("-----------------------------------------")
+	} else {
+		color.Red("-----------------------------------------")
+		color.Red("No accounts found for the given URL: %s", url)
+		color.Red("-----------------------------------------")
+	}
+}

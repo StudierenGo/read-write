@@ -46,13 +46,32 @@ func (vault *Vault) FindAccountsByUrl(url string) []account.Account {
 	var accounts []account.Account
 
 	for _, account := range vault.Accounts {
-		isMatch := strings.Contains(account.Url, url)
-		if isMatch {
+		if strings.Contains(account.Url, url) {
 			accounts = append(accounts, account)
 		}
 	}
 
 	return accounts
+}
+
+func (vault *Vault) DeleteAccountByUrl(url string) bool {
+	var filtered []account.Account
+	isDeleted := false
+
+	// - аккаунты, которые не нужно удалять, сразу добавляются в новый срез и цикл продолжается
+	// - аккаунты, которые нужно удалить, просто пропускаются (не добавляются в новый срез)
+	for _, account := range vault.Accounts {
+		if !strings.Contains(account.Url, url) {
+			filtered = append(filtered, account)
+			continue
+		}
+		isDeleted = true
+	}
+
+	vault.Accounts = filtered
+	vault.writeInFile()
+
+	return isDeleted
 }
 
 /*
@@ -61,7 +80,7 @@ AddNewAccount добавляет новый аккаунт в хранилище
 */
 func (vault *Vault) AddNewAccount(account account.Account) {
 	vault.Accounts = append(vault.Accounts, account)
-	vault.UpdatedAt = time.Now()
+	vault.writeInFile()
 }
 
 func (vault *Vault) ToBytes() ([]byte, error) {
@@ -72,4 +91,16 @@ func (vault *Vault) ToBytes() ([]byte, error) {
 	}
 
 	return file, nil
+}
+
+func (vault *Vault) writeInFile() {
+	vault.UpdatedAt = time.Now()
+	file, err := vault.ToBytes()
+
+	if err != nil {
+		color.Red("Error converting account to bytes:", err)
+		return
+	}
+
+	files.WriteFile(VaultFileName, file)
 }

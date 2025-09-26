@@ -57,6 +57,7 @@ func NewAccount(userLogin, userPassword, userUrl string) (*Account, error) {
 }
 
 func (account *Account) Output() {
+	color.Green("---------------------------")
 	color.Green("Login: %s", account.Login)
 	color.Green("Url: %s", account.Url)
 	color.Green("---------------------------")
