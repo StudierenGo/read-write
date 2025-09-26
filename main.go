@@ -4,7 +4,7 @@ import (
 	"demo/files/account"
 	"demo/files/files"
 	"demo/files/helpers"
-	"demo/files/vault"
+	vlt "demo/files/vault" // <-- renamed import like vlt to avoid conflict with package name
 	"fmt"
 
 	"github.com/fatih/color"
@@ -54,7 +54,7 @@ func createAccount() {
 		return
 	}
 
-	vault := vault.NewVault()
+	vault := vlt.NewVault()
 	vault.AddNewAccount(*account)
 	file, err := vault.ToBytes()
 
@@ -63,7 +63,7 @@ func createAccount() {
 		return
 	}
 
-	files.WriteFile("account.json", file)
+	files.WriteFile(vlt.VaultFileName, file)
 }
 
 func findAccount() {}

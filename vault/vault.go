@@ -9,6 +9,8 @@ import (
 	"github.com/fatih/color"
 )
 
+const VaultFileName = "accounts.json"
+
 type Vault struct {
 	Accounts  []account.Account `json:"accounts"`
 	UpdatedAt time.Time         `json:"updatedAt"`
@@ -20,7 +22,7 @@ NewVault создает новый экземпляр хранилища Vault.
 В случае ошибки или отсутствия файла возвращает пустое хранилище Vault с текущим временем обновления.
 */
 func NewVault() *Vault {
-	file, err := files.ReadFile("accounts.json")
+	file, err := files.ReadFile(VaultFileName)
 
 	if err != nil {
 		return &Vault{
