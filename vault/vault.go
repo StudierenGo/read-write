@@ -10,11 +10,14 @@ import (
 	"github.com/fatih/color"
 )
 
-const DbName = "data.json"
-
 type Vault struct {
 	Accounts  []account.Account `json:"accounts"`
 	UpdatedAt time.Time         `json:"updatedAt"`
+}
+
+type VaultWithDb struct {
+	Vault
+	db files.JsonDb
 }
 
 /*
@@ -22,14 +25,16 @@ NewVault создает новый экземпляр хранилища Vault.
 Если файл accounts.json существует, метод читает его содержимое и десериализует в структуру Vault.
 В случае ошибки или отсутствия файла возвращает пустое хранилище Vault с текущим временем обновления.
 */
-func NewVault() *Vault {
-	db := files.NewJsonDb(DbName)
+func NewVault(db *files.JsonDb) *VaultWithDb {
 	file, err := db.Read()
 
 	if err != nil {
-		return &Vault{
-			Accounts:  []account.Account{},
-			UpdatedAt: time.Now(),
+		return &VaultWithDb{
+			Vault: Vault{
+				Accounts:  []account.Account{},
+				UpdatedAt: time.Now(),
+			},
+			db: *db,
 		}
 	}
 
@@ -38,12 +43,23 @@ func NewVault() *Vault {
 
 	if err != nil {
 		color.Red("Error reading file:", err.Error())
+
+		return &VaultWithDb{
+			Vault: Vault{
+				Accounts:  []account.Account{},
+				UpdatedAt: time.Now(),
+			},
+			db: *db,
+		}
 	}
 
-	return &vault
+	return &VaultWithDb{
+		Vault: vault,
+		db:    *db,
+	}
 }
 
-func (vault *Vault) FindAccountsByUrl(url string) []account.Account {
+func (vault *VaultWithDb) FindAccountsByUrl(url string) []account.Account {
 	var accounts []account.Account
 
 	for _, account := range vault.Accounts {
@@ -55,7 +71,7 @@ func (vault *Vault) FindAccountsByUrl(url string) []account.Account {
 	return accounts
 }
 
-func (vault *Vault) DeleteAccountByUrl(url string) bool {
+func (vault *VaultWithDb) DeleteAccountByUrl(url string) bool {
 	var filtered []account.Account
 	isDeleted := false
 
@@ -70,7 +86,7 @@ func (vault *Vault) DeleteAccountByUrl(url string) bool {
 	}
 
 	vault.Accounts = filtered
-	vault.writeInFile()
+	vault.save()
 
 	return isDeleted
 }
@@ -79,9 +95,9 @@ func (vault *Vault) DeleteAccountByUrl(url string) bool {
 AddNewAccount добавляет новый аккаунт в хранилище Vault.
 Метод помещает переданный аккаунт в массив Accounts и обновляет время обновления хранилища.
 */
-func (vault *Vault) AddNewAccount(account account.Account) {
+func (vault *VaultWithDb) AddNewAccount(account account.Account) {
 	vault.Accounts = append(vault.Accounts, account)
-	vault.writeInFile()
+	vault.save()
 }
 
 func (vault *Vault) ToBytes() ([]byte, error) {
@@ -94,15 +110,14 @@ func (vault *Vault) ToBytes() ([]byte, error) {
 	return file, nil
 }
 
-func (vault *Vault) writeInFile() {
-	db := files.NewJsonDb(DbName)
+func (vault *VaultWithDb) save() {
 	vault.UpdatedAt = time.Now()
-	file, err := vault.ToBytes()
+	file, err := vault.Vault.ToBytes()
 
 	if err != nil {
 		color.Red("Error converting account to bytes:", err)
 		return
 	}
 
-	db.Write(file)
+	vault.db.Write(file)
 }

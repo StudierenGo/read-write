@@ -2,6 +2,7 @@ package main
 
 import (
 	"demo/files/account"
+	"demo/files/files"
 	"demo/files/helpers"
 	"demo/files/vault"
 	"fmt"
@@ -14,7 +15,7 @@ func main() {
 	color.Blue("=== Welcome to the User Account Manager! ===")
 	color.Blue("--------------------------------------------")
 
-	existingVault := vault.NewVault()
+	existingVault := vault.NewVault(files.NewJsonDb("data.json"))
 
 	for {
 		choice := getMenuChoice()
@@ -46,7 +47,7 @@ func getMenuChoice() (choice string) {
 	return
 }
 
-func createAccount(existingVault *vault.Vault) {
+func createAccount(vault *vault.VaultWithDb) {
 	userLogin, userPassword, userUrl := helpers.GetUserInput()
 	account, err := account.NewAccount(userLogin, userPassword, userUrl)
 
@@ -55,12 +56,12 @@ func createAccount(existingVault *vault.Vault) {
 		return
 	}
 
-	existingVault.AddNewAccount(*account)
+	vault.AddNewAccount(*account)
 }
 
-func findAccount(existingVault *vault.Vault) {
+func findAccount(vault *vault.VaultWithDb) {
 	url := helpers.PromptUserData("Enter URL to search")
-	accounts := existingVault.FindAccountsByUrl(url)
+	accounts := vault.FindAccountsByUrl(url)
 
 	for _, account := range accounts {
 		account.Output()
@@ -73,9 +74,9 @@ func findAccount(existingVault *vault.Vault) {
 	}
 }
 
-func deleteAccount(existingVault *vault.Vault) {
+func deleteAccount(vault *vault.VaultWithDb) {
 	url := helpers.PromptUserData("Enter URL to search")
-	isDeleted := existingVault.DeleteAccountByUrl(url)
+	isDeleted := vault.DeleteAccountByUrl(url)
 
 	if isDeleted {
 		color.Yellow("-----------------------------------------")
