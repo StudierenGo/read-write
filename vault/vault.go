@@ -10,7 +10,7 @@ import (
 	"github.com/fatih/color"
 )
 
-const VaultFileName = "accounts.json"
+const DbName = "data.json"
 
 type Vault struct {
 	Accounts  []account.Account `json:"accounts"`
@@ -23,7 +23,8 @@ NewVault создает новый экземпляр хранилища Vault.
 В случае ошибки или отсутствия файла возвращает пустое хранилище Vault с текущим временем обновления.
 */
 func NewVault() *Vault {
-	file, err := files.ReadFile(VaultFileName)
+	db := files.NewJsonDb(DbName)
+	file, err := db.Read()
 
 	if err != nil {
 		return &Vault{
@@ -94,6 +95,7 @@ func (vault *Vault) ToBytes() ([]byte, error) {
 }
 
 func (vault *Vault) writeInFile() {
+	db := files.NewJsonDb(DbName)
 	vault.UpdatedAt = time.Now()
 	file, err := vault.ToBytes()
 
@@ -102,5 +104,5 @@ func (vault *Vault) writeInFile() {
 		return
 	}
 
-	files.WriteFile(VaultFileName, file)
+	db.Write(file)
 }
