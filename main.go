@@ -4,6 +4,7 @@ import (
 	"demo/files/account"
 	"demo/files/files"
 	"demo/files/helpers"
+	"demo/files/output"
 	"demo/files/vault"
 	"fmt"
 
@@ -31,7 +32,7 @@ func main() {
 			color.Green("Exiting the program. Goodbye!")
 			return
 		default:
-			color.Magenta("Invalid choice. Please try again.")
+			output.PrintMessage("Invalid choice. Please try again.")
 		}
 	}
 }
