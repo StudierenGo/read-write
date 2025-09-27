@@ -2,13 +2,17 @@ package vault
 
 import (
 	"demo/files/account"
-	"demo/files/files"
 	"encoding/json"
 	"strings"
 	"time"
 
 	"github.com/fatih/color"
 )
+
+type Db interface {
+	Read() ([]byte, error)
+	Write([]byte)
+}
 
 type Vault struct {
 	Accounts  []account.Account `json:"accounts"`
@@ -17,7 +21,7 @@ type Vault struct {
 
 type VaultWithDb struct {
 	Vault
-	db files.JsonDb
+	db Db
 }
 
 /*
@@ -25,7 +29,7 @@ NewVault создает новый экземпляр хранилища Vault.
 Если файл accounts.json существует, метод читает его содержимое и десериализует в структуру Vault.
 В случае ошибки или отсутствия файла возвращает пустое хранилище Vault с текущим временем обновления.
 */
-func NewVault(db *files.JsonDb) *VaultWithDb {
+func NewVault(db Db) *VaultWithDb {
 	file, err := db.Read()
 
 	if err != nil {
@@ -34,7 +38,7 @@ func NewVault(db *files.JsonDb) *VaultWithDb {
 				Accounts:  []account.Account{},
 				UpdatedAt: time.Now(),
 			},
-			db: *db,
+			db: db,
 		}
 	}
 
@@ -49,13 +53,13 @@ func NewVault(db *files.JsonDb) *VaultWithDb {
 				Accounts:  []account.Account{},
 				UpdatedAt: time.Now(),
 			},
-			db: *db,
+			db: db,
 		}
 	}
 
 	return &VaultWithDb{
 		Vault: vault,
-		db:    *db,
+		db:    db,
 	}
 }
 
