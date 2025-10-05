@@ -18,6 +18,14 @@ var menu = map[string]func(*vault.VaultWithDb){
 	"4": deleteAccount,
 }
 
+var menuItems = []string{
+	"1. Create a new account",
+	"2. Find account by URL",
+	"3. Find account by login",
+	"4. Delete account",
+	"5. Exit",
+}
+
 func main() {
 	color.Blue("--------------------------------------------")
 	color.Blue("=== Welcome to the User Account Manager! ===")
@@ -26,7 +34,7 @@ func main() {
 	existingVault := vault.NewVault(files.NewJsonDb("data.json"))
 
 	for {
-		choice := getMenuChoice()
+		choice := getMenuChoice[string](menuItems...)
 
 		if choice == "5" {
 			color.Blue("Goodbye!")
@@ -43,12 +51,22 @@ func main() {
 	}
 }
 
-func getMenuChoice() (choice string) {
-	color.Green("1. Create a new account")
-	color.Yellow("2. Find account by URL")
-	color.Yellow("3. Find account by login")
-	color.Red("4. Delete account")
-	color.Magenta("5. Exit")
+func getMenuChoice[T any](arg ...string) (choice string) {
+	for i, item := range arg {
+		switch i {
+		case len(arg) - 1:
+			color.Magenta(item)
+		case 0:
+			color.Green(item)
+		case 1, 2:
+			color.Yellow(item)
+		case 3:
+			color.Red(item)
+		default:
+			color.Yellow(item)
+		}
+	}
+
 	color.Cyan("Enter your choice: ")
 	fmt.Scanln(&choice)
 
