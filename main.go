@@ -7,8 +7,10 @@ import (
 	"demo/files/output"
 	"demo/files/vault"
 	"fmt"
+	"log"
 
 	"github.com/fatih/color"
+	"github.com/joho/godotenv"
 )
 
 var menu = map[string]func(*vault.VaultWithDb){
@@ -27,6 +29,11 @@ var menuItems = []string{
 }
 
 func main() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading .env file: %s", err)
+	}
+
 	color.Blue("--------------------------------------------")
 	color.Blue("=== Welcome to the User Account Manager! ===")
 	color.Blue("--------------------------------------------")
