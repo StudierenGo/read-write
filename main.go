@@ -11,6 +11,12 @@ import (
 	"github.com/fatih/color"
 )
 
+var menu = map[string]func(*vault.VaultWithDb){
+	"1": createAccount,
+	"2": findAccount,
+	"3": deleteAccount,
+}
+
 func main() {
 	color.Blue("--------------------------------------------")
 	color.Blue("=== Welcome to the User Account Manager! ===")
@@ -21,19 +27,18 @@ func main() {
 	for {
 		choice := getMenuChoice()
 
-		switch choice {
-		case "1":
-			createAccount(existingVault)
-		case "2":
-			findAccount(existingVault)
-		case "3":
-			deleteAccount(existingVault)
-		case "4":
-			color.Green("Exiting the program. Goodbye!")
-			return
-		default:
+		if choice == "4" {
+			color.Blue("Goodbye!")
+			break
+		}
+
+		menuFn := menu[choice]
+
+		if menuFn == nil {
 			output.PrintMessage("Invalid choice. Please try again.")
 		}
+
+		menuFn(existingVault)
 	}
 }
 
