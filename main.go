@@ -13,8 +13,9 @@ import (
 
 var menu = map[string]func(*vault.VaultWithDb){
 	"1": createAccount,
-	"2": findAccount,
-	"3": deleteAccount,
+	"2": findAccountByUrl,
+	"3": findAccountByLogin,
+	"4": deleteAccount,
 }
 
 func main() {
@@ -27,7 +28,7 @@ func main() {
 	for {
 		choice := getMenuChoice()
 
-		if choice == "4" {
+		if choice == "5" {
 			color.Blue("Goodbye!")
 			break
 		}
@@ -44,9 +45,10 @@ func main() {
 
 func getMenuChoice() (choice string) {
 	color.Green("1. Create a new account")
-	color.Yellow("2. Find account")
-	color.Red("3. Delete account")
-	color.Magenta("4. Exit")
+	color.Yellow("2. Find account by URL")
+	color.Yellow("3. Find account by login")
+	color.Red("4. Delete account")
+	color.Magenta("5. Exit")
 	color.Cyan("Enter your choice: ")
 	fmt.Scanln(&choice)
 
@@ -65,19 +67,18 @@ func createAccount(vault *vault.VaultWithDb) {
 	vault.AddNewAccount(*account)
 }
 
-func findAccount(vault *vault.VaultWithDb) {
+func findAccountByUrl(vault *vault.VaultWithDb) {
 	url := helpers.PromptUserData("Enter URL to search")
-	accounts := vault.FindAccountsByUrl(url)
+	accounts := vault.FindAccountsByUrl(url, helpers.CheckUrl)
 
-	for _, account := range accounts {
-		account.Output()
-	}
+	helpers.ShowOutputMessage(&accounts, url, "URL")
+}
 
-	if len(accounts) == 0 {
-		color.Red("-----------------------------------------")
-		color.Red("No accounts found for the given URL: %s", url)
-		color.Red("-----------------------------------------")
-	}
+func findAccountByLogin(vault *vault.VaultWithDb) {
+	login := helpers.PromptUserData("Enter user login to search")
+	accounts := vault.FindAccountsByUrl(login, helpers.CheckLogin)
+
+	helpers.ShowOutputMessage(&accounts, login, "login")
 }
 
 func deleteAccount(vault *vault.VaultWithDb) {

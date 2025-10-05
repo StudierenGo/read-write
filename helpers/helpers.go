@@ -2,6 +2,7 @@ package helpers
 
 import (
 	"bufio"
+	"demo/files/account"
 	"fmt"
 	"os"
 	"strings"
@@ -39,4 +40,24 @@ func PromptUserData(prompt string) string {
 
 	userAnswer = strings.TrimSpace(userAnswer)
 	return userAnswer
+}
+
+func CheckUrl(acc account.Account, url string) bool {
+	return strings.Contains(acc.Url, url)
+}
+
+func CheckLogin(acc account.Account, login string) bool {
+	return strings.Contains(acc.Login, login)
+}
+
+func ShowOutputMessage(accounts *[]account.Account, criteria string, searchBy string) {
+	for _, account := range *accounts {
+		account.Output()
+	}
+
+	if len(*accounts) == 0 {
+		color.Red("-----------------------------------------")
+		color.Red("No accounts found for the given %s: %s", searchBy, criteria)
+		color.Red("-----------------------------------------")
+	}
 }
