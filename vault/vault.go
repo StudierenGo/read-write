@@ -2,6 +2,7 @@ package vault
 
 import (
 	"demo/files/account"
+	"demo/files/crypter"
 	"encoding/json"
 	"strings"
 	"time"
@@ -29,7 +30,8 @@ type Vault struct {
 
 type VaultWithDb struct {
 	Vault
-	db Db
+	db  Db
+	enc crypter.Crypter
 }
 
 /*
@@ -37,7 +39,7 @@ NewVault создает новый экземпляр хранилища Vault.
 Если файл accounts.json существует, метод читает его содержимое и десериализует в структуру Vault.
 В случае ошибки или отсутствия файла возвращает пустое хранилище Vault с текущим временем обновления.
 */
-func NewVault(db Db) *VaultWithDb {
+func NewVault(db Db, enc crypter.Crypter) *VaultWithDb {
 	file, err := db.Read()
 
 	if err != nil {
@@ -46,12 +48,15 @@ func NewVault(db Db) *VaultWithDb {
 				Accounts:  []account.Account{},
 				UpdatedAt: time.Now(),
 			},
-			db: db,
+			db:  db,
+			enc: enc,
 		}
 	}
 
+	data := enc.Decrypt(file)
+
 	var vault Vault
-	err = json.Unmarshal(file, &vault)
+	err = json.Unmarshal(data, &vault)
 
 	if err != nil {
 		color.Red("Error reading file:", err.Error())
@@ -61,13 +66,15 @@ func NewVault(db Db) *VaultWithDb {
 				Accounts:  []account.Account{},
 				UpdatedAt: time.Now(),
 			},
-			db: db,
+			db:  db,
+			enc: enc,
 		}
 	}
 
 	return &VaultWithDb{
 		Vault: vault,
 		db:    db,
+		enc:   enc,
 	}
 }
 
@@ -132,5 +139,7 @@ func (vault *VaultWithDb) save() {
 		return
 	}
 
-	vault.db.Write(file)
+	data := vault.enc.Encrypt(file)
+
+	vault.db.Write(data)
 }

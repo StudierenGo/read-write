@@ -2,15 +2,15 @@ package main
 
 import (
 	"demo/files/account"
+	"demo/files/crypter"
 	"demo/files/files"
 	"demo/files/helpers"
 	"demo/files/output"
 	"demo/files/vault"
 	"fmt"
-	"log"
+	"os"
 
 	"github.com/fatih/color"
-	"github.com/joho/godotenv"
 )
 
 var menu = map[string]func(*vault.VaultWithDb){
@@ -29,16 +29,16 @@ var menuItems = []string{
 }
 
 func main() {
-	err := godotenv.Load(".env")
-	if err != nil {
-		log.Fatalf("Error loading .env file: %s", err)
-	}
+	helpers.LoadEnvFile()
+
+	result := os.Getenv("KEY")
+	fmt.Println(result)
 
 	color.Blue("--------------------------------------------")
 	color.Blue("=== Welcome to the User Account Manager! ===")
 	color.Blue("--------------------------------------------")
 
-	existingVault := vault.NewVault(files.NewJsonDb("data.json"))
+	existingVault := vault.NewVault(files.NewJsonDb("data.vault"), *crypter.NewCrypter())
 
 	for {
 		choice := getMenuChoice[string](menuItems...)

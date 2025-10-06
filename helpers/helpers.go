@@ -4,10 +4,12 @@ import (
 	"bufio"
 	"demo/files/account"
 	"fmt"
+	"log"
 	"os"
 	"strings"
 
 	"github.com/fatih/color"
+	"github.com/joho/godotenv"
 )
 
 /*
@@ -59,5 +61,12 @@ func ShowOutputMessage(accounts *[]account.Account, criteria string, searchBy st
 		color.Red("-----------------------------------------")
 		color.Red("No accounts found for the given %s: %s", searchBy, criteria)
 		color.Red("-----------------------------------------")
+	}
+}
+
+func LoadEnvFile() {
+	err := godotenv.Load(".env")
+	if err != nil {
+		log.Fatalf("Error loading .env file: %s", err)
 	}
 }
